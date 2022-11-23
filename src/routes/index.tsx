@@ -1,14 +1,8 @@
-import {
-  component$,
-  Resource,
-  useClientMount$,
-  useStore,
-  useWatch$,
-} from "@builder.io/qwik";
+import { $, component$, Resource, useClientEffect$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { createClient, Session } from "@supabase/supabase-js";
 import { useSessionContext } from "./SessionContext";
+import { createSupabase } from "./utils/supabase";
 
 const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0bnRnY3djaXFqeWp5Y2R3eGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjkxNTA1NDAsImV4cCI6MTk4NDcyNjU0MH0.bunBJmwmvHnmzBXxQiofobc4Tn04SDymhYLOiIfl8wA";
@@ -25,6 +19,19 @@ export default component$(() => {
   // /chats/:id tabbed window is giver-user match by chat. Giver and user can close chat anytime
 
   const sessionContext = useSessionContext();
+
+  const handleLogin = $(async () => {
+    console.log("logging in...");
+    const supabase = createSupabase();
+    supabase.auth.signInWithOtp({ email: "timmyhuang0404@gmail.com" });
+  });
+
+  useClientEffect$(async () => {
+    const supabase = createSupabase();
+    const sessionResponse = await supabase.auth.getSession();
+
+    console.log("sessionResponse.data.session", sessionResponse.data.session);
+  });
 
   return (
     <div>
@@ -43,7 +50,7 @@ export default component$(() => {
                 ) : (
                   <button
                     onClick$={() => {
-                      console.log("logging in...");
+                      handleLogin();
                     }}
                   >
                     Login
