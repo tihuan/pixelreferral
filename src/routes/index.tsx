@@ -1,14 +1,59 @@
-import { component$ } from '@builder.io/qwik';
-import type { DocumentHead } from '@builder.io/qwik-city';
-import { Link } from '@builder.io/qwik-city';
+import {
+  component$,
+  Resource,
+  useClientMount$,
+  useStore,
+  useWatch$,
+} from "@builder.io/qwik";
+import type { DocumentHead } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
+import { createClient, Session } from "@supabase/supabase-js";
+import { useSessionContext } from "./SessionContext";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0bnRnY3djaXFqeWp5Y2R3eGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjkxNTA1NDAsImV4cCI6MTk4NDcyNjU0MH0.bunBJmwmvHnmzBXxQiofobc4Tn04SDymhYLOiIfl8wA";
+
+export const supabaseUrl = "https://wtntgcwciqjyjycdwxdm.supabase.co";
+export const supabaseKey = SUPABASE_KEY;
+
+// supabase.auth.signInWithOtp({ email: });
+// supabase.auth.signUp;
 
 export default component$(() => {
+  // Check if session, if not, show login button and show public queues
+  // If yes, show public queues, queues they're in, and chats they're in
+  // /chats/:id tabbed window is giver-user match by chat. Giver and user can close chat anytime
+
+  const sessionContext = useSessionContext();
+
   return (
     <div>
-      <h1>
-        Welcome to Qwik <span class="lightning">⚡️</span>
-      </h1>
-
+      <h1>Welcome to Pixel Referral 📱🙌</h1>
+      {/* DEBUG */}
+      {/* DEBUG */}
+      {/* DEBUG */}
+      <span>
+        <Resource
+          value={sessionContext}
+          onResolved={(session) => {
+            return (
+              <>
+                {session ? (
+                  <div>Your session is: {JSON.stringify(session)}</div>
+                ) : (
+                  <button
+                    onClick$={() => {
+                      console.log("logging in...");
+                    }}
+                  >
+                    Login
+                  </button>
+                )}
+              </>
+            );
+          }}
+        />
+      </span>
       <ul>
         <li>
           Check out the <code>src/routes</code> directory to get started.
@@ -20,9 +65,7 @@ export default component$(() => {
           More info about development in <code>README.md</code>
         </li>
       </ul>
-
       <h2>Commands</h2>
-
       <table class="commands">
         <tr>
           <td>
@@ -49,9 +92,7 @@ export default component$(() => {
           <td>Select an integration to add.</td>
         </tr>
       </table>
-
       <h2>Add Integrations</h2>
-
       <table class="commands">
         <tr>
           <td>
@@ -97,9 +138,7 @@ export default component$(() => {
           </td>
         </tr>
       </table>
-
       <h2>Community</h2>
-
       <ul>
         <li>
           <span>Questions or just want to say hi? </span>
@@ -135,11 +174,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Welcome to Qwik',
+  title: "Welcome to Qwik",
   meta: [
     {
-      name: 'description',
-      content: 'Qwik site description',
+      name: "description",
+      content: "Qwik site description",
     },
   ],
 };
