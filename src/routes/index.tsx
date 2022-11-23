@@ -23,7 +23,15 @@ export default component$(() => {
   const handleLogin = $(async () => {
     console.log("logging in...");
     const supabase = createSupabase();
-    supabase.auth.signInWithOtp({ email: "timmyhuang0404@gmail.com" });
+
+    const redirectUrl = location
+      ? location.protocol + "//" + location.host
+      : undefined;
+
+    supabase.auth.signInWithOtp({
+      email: "timmyhuang0404@gmail.com",
+      options: { emailRedirectTo: redirectUrl },
+    });
   });
 
   useClientEffect$(async () => {
